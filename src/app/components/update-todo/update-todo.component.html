@@ -1,0 +1,49 @@
+<div class="card w-96 mx-auto bg-base-100 card-md shadow-sm mt-3">
+  @if (updateTodoResource.isLoading()) {
+  <loading />
+  } @if (updateTodoResource.hasValue()) {
+  <div class="card-body">
+    <h1 class="text-center text-2xl font-semibold">Add Todo</h1>
+    <form [formGroup]="todoForm" (ngSubmit)="onSubmit()">
+      <div class="mb-2">
+        <label for="title" class="inline-block mb-1 text-sm">Todo Title</label>
+        <input
+          type="text"
+          class="input placeholder-gray-500"
+          placeholder="Enter Todo Title"
+          formControlName="title"
+        />
+      </div>
+      <div class="mb-2">
+        <label for="title" class="inline-block mb-1 text-sm"
+          >Todo Description</label
+        >
+        <input
+          type="text"
+          class="input placeholder-gray-500"
+          placeholder="Enter Todo Description"
+          formControlName="description"
+        />
+      </div>
+      <div class="mb-2">
+        <label for="title" class="inline-block mb-1 text-sm"
+          >Todo Completed</label
+        >
+        <select class="select" formControlName="completed">
+          <option value="false">No</option>
+          <option value="true">Yes</option>
+        </select>
+      </div>
+      <button class="btn btn-success">Submit</button>
+      <!-- <p>{{ todoForm.value | json }}</p> -->
+    </form>
+    <!-- <p>
+        A card component has a figure, a body part, and inside body there are
+        title and actions parts
+      </p>
+      <div class="justify-end card-actions">
+        <button class="btn btn-primary">Buy Now</button>
+      </div> -->
+  </div>
+  }
+</div>

@@ -1,0 +1,66 @@
+<main class="mt-3">
+  <h1 class="text-3xl font-semibold text-center">List of Todos</h1>
+  @if(isAdmin()) {
+  <button
+    class="btn btn-primary btn-sm sm:btn-md ml-2 my-2"
+    routerLink="/add-todo"
+  >
+    Add Todo
+  </button>
+  } @if (todosResource.isLoading()) {
+  <loading />
+  } @if (todosResource.hasValue()) {
+  <div class="overflow-x-auto">
+    <table class="table table-zebra table-xs sm:table-md">
+      <!-- head -->
+      <thead>
+        <tr>
+          <th></th>
+          <th>Title</th>
+          <th>Description</th>
+          <th>Completed</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (todo of todosResource.value(); track todo.id) {
+        <tr>
+          <th>{{ $index + 1 }}</th>
+          <td>{{ todo.title }}</td>
+          <td>{{ todo.description }}</td>
+          <td>{{ todo.completed ? "Yes" : "No" }}</td>
+          <td class="flex flex-col sm:flex-row gap-2 flex-wrap">
+            @if (isAdmin()) {
+            <button
+              class="btn btn-xs sm:btn-md btn-info"
+              [routerLink]="['/update-todo', todo.id]"
+            >
+              Update
+            </button>
+            <button
+              class="btn btn-xs sm:btn-md btn-error"
+              (click)="onDelete(todo.id)"
+            >
+              Delete
+            </button>
+            }
+            <button
+              class="btn btn-xs sm:btn-md btn-success"
+              (click)="onComplete(todo.id)"
+            >
+              Complete
+            </button>
+            <button
+              class="btn btn-xs sm:btn-md btn-soft"
+              (click)="onIncomplete(todo.id)"
+            >
+              Incomplete
+            </button>
+          </td>
+        </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+  }
+</main>

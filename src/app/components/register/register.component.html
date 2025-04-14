@@ -1,0 +1,114 @@
+<div class="card w-96 mx-auto bg-base-100 card-md shadow-sm mt-3">
+  <div class="card-body">
+    <h1 class="text-center text-2xl font-semibold">Registration Form</h1>
+    <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+      <div class="mb-2">
+        <label for="title" class="inline-block mb-1 text-sm">Name</label>
+        <input
+          type="text"
+          class="input placeholder-gray-500"
+          placeholder="Enter Name"
+          formControlName="name"
+        />
+      </div>
+      <div class="mb-2">
+        <label for="title" class="inline-block mb-1 text-sm">Username</label>
+        <label class="input">
+          <svg
+            class="h-[1em] opacity-50"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+          >
+            <g
+              stroke-linejoin="round"
+              stroke-linecap="round"
+              stroke-width="2.5"
+              fill="none"
+              stroke="currentColor"
+            >
+              <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
+              <circle cx="12" cy="7" r="4"></circle>
+            </g>
+          </svg>
+          <input
+            type="text"
+            class="placeholder-gray-500"
+            placeholder="Enter Username"
+            formControlName="username"
+          />
+        </label>
+      </div>
+      <div class="mb-2">
+        <label for="title" class="inline-block mb-1 text-sm">Email</label>
+        <label class="input">
+          <svg
+            class="h-[1em] opacity-50"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+          >
+            <g
+              stroke-linejoin="round"
+              stroke-linecap="round"
+              stroke-width="2.5"
+              fill="none"
+              stroke="currentColor"
+            >
+              <rect width="20" height="16" x="2" y="4" rx="2"></rect>
+              <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path>
+            </g>
+          </svg>
+          <input
+            type="email"
+            class="placeholder-gray-500"
+            placeholder="Enter Email"
+            formControlName="email"
+          />
+        </label>
+      </div>
+      <div class="mb-2">
+        <label for="title" class="inline-block mb-1 text-sm">Password</label>
+        <label class="input">
+          <svg
+            class="h-[1em] opacity-50"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+          >
+            <g
+              stroke-linejoin="round"
+              stroke-linecap="round"
+              stroke-width="2.5"
+              fill="none"
+              stroke="currentColor"
+            >
+              <path
+                d="M2.586 17.414A2 2 0 0 0 2 18.828V21a1 1 0 0 0 1 1h3a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h1a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h.172a2 2 0 0 0 1.414-.586l.814-.814a6.5 6.5 0 1 0-4-4z"
+              ></path>
+              <circle cx="16.5" cy="7.5" r=".5" fill="currentColor"></circle>
+            </g>
+          </svg>
+          <input
+            type="password"
+            class="placeholder-gray-500"
+            placeholder="Enter Password"
+            formControlName="password"
+          />
+        </label>
+      </div>
+      <div class="flex items-center gap-2">
+        <button class="btn btn-primary">Submit</button>
+        <span
+          >Already registered?
+          <a routerLink="/login" class="link link-primary">login here</a>
+        </span>
+      </div>
+    </form>
+    <!-- <p>
+      A card component has a figure, a body part, and inside body there are
+      title and actions parts
+    </p>
+    <div class="justify-end card-actions">
+      <button class="btn btn-primary">Buy Now</button>
+    </div> -->
+  </div>
+  <!-- <p>{{ registerForm.value | json }}</p> -->
+</div>
