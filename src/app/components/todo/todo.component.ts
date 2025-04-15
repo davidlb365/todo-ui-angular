@@ -5,32 +5,11 @@ import { TodoService } from '../../services/todo.service';
 import { Todo } from '../../interfaces/todo.interface';
 import { firstValueFrom } from 'rxjs';
 import { Router } from '@angular/router';
+import { TodoFormComponent } from '../todo-form/todo-form.component';
 
 @Component({
   selector: 'app-todo',
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, TodoFormComponent],
   templateUrl: './todo.component.html',
 })
-export default class TodoComponent {
-  todoService = inject(TodoService);
-  router = inject(Router);
-  fb = inject(FormBuilder);
-
-  todoForm = this.fb.group({
-    title: ['', Validators.required],
-    description: ['', Validators.required],
-    completed: [false],
-  });
-
-  async onSubmit() {
-    if (!this.todoForm.valid) return;
-    // this.todoForm.markAllAsTouched()
-    const formValue: Partial<Todo> = {
-      title: this.todoForm.get('title')?.value ?? '',
-      description: this.todoForm.get('description')?.value ?? '',
-      completed: this.todoForm.get('completed')?.value ?? false,
-    };
-    await firstValueFrom(this.todoService.addTodo(formValue));
-    this.router.navigateByUrl('/todos');
-  }
-}
+export default class TodoComponent {}

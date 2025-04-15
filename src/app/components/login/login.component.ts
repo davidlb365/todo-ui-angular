@@ -1,10 +1,11 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { TodoService } from '../../services/todo.service';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { LoginUser } from '../../interfaces/user.interface';
 import { firstValueFrom } from 'rxjs';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-login',
@@ -15,6 +16,8 @@ export default class LoginComponent {
   authService = inject(AuthService);
   router = inject(Router);
   fb = inject(FormBuilder);
+
+  error = signal<string | null>(null);
 
   loginForm = this.fb.group({
     username: ['', Validators.required],
@@ -32,7 +35,6 @@ export default class LoginComponent {
 
     try {
       const data = await firstValueFrom(this.authService.login(formValue));
-      // console.log({ data });
 
       this.authService.authInfo.set({
         authToken: data.accessToken,
@@ -40,8 +42,12 @@ export default class LoginComponent {
         role: data.role,
       });
       this.router.navigateByUrl('/todos');
+      this.error.set(null);
+      // throw new Error('error');
     } catch (error: any) {
-      // console.log(error);
+      console.log(error.message);
+
+      this.error.set(error.message);
     }
   }
 }

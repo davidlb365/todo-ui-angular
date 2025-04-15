@@ -7,10 +7,11 @@ import { firstValueFrom, map } from 'rxjs';
 import { JsonPipe } from '@angular/common';
 import { rxResource, toSignal } from '@angular/core/rxjs-interop';
 import { LoadingComponent } from '../loading/loading.component';
+import { TodoFormComponent } from '../todo-form/todo-form.component';
 
 @Component({
   selector: 'app-update-todo',
-  imports: [ReactiveFormsModule, LoadingComponent],
+  imports: [ReactiveFormsModule, LoadingComponent, TodoFormComponent],
   templateUrl: './update-todo.component.html',
 })
 export default class UpdateTodoComponent {

@@ -38,7 +38,7 @@ export class AuthService {
   });
 
   handleAuthError(error: HttpErrorResponse) {
-    console.log(error);
+    console.log(error.error.message);
 
     if (error.status === 401) {
       // A client-side or network error occurred. Handle it accordingly.
@@ -50,10 +50,9 @@ export class AuthService {
       });
       this.router.navigateByUrl('/login');
     }
+    const errorMessage: string = error.error.message;
     // Return an observable with a user-facing error message.
-    return throwError(
-      () => new Error('Something bad happened; please try again later.')
-    );
+    return throwError(() => new Error(errorMessage));
   }
 
   register(user: Partial<User>) {

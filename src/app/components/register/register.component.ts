@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { TodoService } from '../../services/todo.service';
 import { Router, RouterLink } from '@angular/router';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -16,6 +16,8 @@ export default class RegisterComponent {
   authService = inject(AuthService);
   router = inject(Router);
   fb = inject(FormBuilder);
+
+  error = signal(false);
 
   registerForm = this.fb.group({
     name: ['', Validators.required],
@@ -35,15 +37,14 @@ export default class RegisterComponent {
       email: this.registerForm.get('email')?.value ?? '',
       password: this.registerForm.get('password')?.value ?? '',
     };
-    // console.log({ formValue });
 
     try {
       const data = await firstValueFrom(this.authService.register(formValue));
       this.router.navigateByUrl('/login');
+      this.error.set(false);
+      // throw new Error('error');
     } catch (error: any) {
-      // console.log({ error });
+      this.error.set(true);
     }
-
-    // this.router.navigateByUrl('/todos');
   }
 }

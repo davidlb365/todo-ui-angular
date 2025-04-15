@@ -10,6 +10,10 @@
           placeholder="Enter Name"
           formControlName="name"
         />
+        @if(registerForm.get('name')?.touched &&
+        registerForm.get('name')?.errors) {
+        <p class="text-error text-sm">Enter name</p>
+        }
       </div>
       <div class="mb-2">
         <label for="title" class="inline-block mb-1 text-sm">Username</label>
@@ -37,6 +41,10 @@
             formControlName="username"
           />
         </label>
+        @if(registerForm.get('username')?.touched &&
+        registerForm.get('username')?.errors) {
+        <p class="text-error text-sm">Enter username</p>
+        }
       </div>
       <div class="mb-2">
         <label for="title" class="inline-block mb-1 text-sm">Email</label>
@@ -64,6 +72,10 @@
             formControlName="email"
           />
         </label>
+        @if(registerForm.get('email')?.touched &&
+        registerForm.get('email')?.errors) {
+        <p class="text-error text-sm">Enter email</p>
+        }
       </div>
       <div class="mb-2">
         <label for="title" class="inline-block mb-1 text-sm">Password</label>
@@ -93,6 +105,10 @@
             formControlName="password"
           />
         </label>
+        @if(registerForm.get('password')?.touched &&
+        registerForm.get('password')?.errors) {
+        <p class="text-error text-sm">Enter password</p>
+        }
       </div>
       <div class="flex items-center gap-2">
         <button class="btn btn-primary">Submit</button>
@@ -101,14 +117,9 @@
           <a routerLink="/login" class="link link-primary">login here</a>
         </span>
       </div>
+      @if(this.error()) {
+      <p class="text-error text-sm">Error occurred</p>
+      }
     </form>
-    <!-- <p>
-      A card component has a figure, a body part, and inside body there are
-      title and actions parts
-    </p>
-    <div class="justify-end card-actions">
-      <button class="btn btn-primary">Buy Now</button>
-    </div> -->
   </div>
-  <!-- <p>{{ registerForm.value | json }}</p> -->
 </div>

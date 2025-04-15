@@ -1,0 +1,56 @@
+<div class="card-body">
+  <h1 class="text-center text-2xl font-semibold">
+    {{ todo() ? "Update Todo" : "Add Todo" }}
+  </h1>
+  <form [formGroup]="todoForm" (ngSubmit)="onSubmit()">
+    <div class="mb-2">
+      <label for="title" class="inline-block mb-1 text-sm">Todo Title</label>
+      <input
+        type="text"
+        class="input placeholder-gray-500"
+        placeholder="Enter Todo Title"
+        formControlName="title"
+      />
+      @if(todoForm.get('title')?.touched && todoForm.get('title')?.errors) {
+      <p class="text-error text-sm">Enter title</p>
+      }
+    </div>
+    <div class="mb-2">
+      <label for="title" class="inline-block mb-1 text-sm"
+        >Todo Description</label
+      >
+      <input
+        type="text"
+        class="input placeholder-gray-500"
+        placeholder="Enter Todo Description"
+        formControlName="description"
+      />
+      @if(todoForm.get('description')?.touched &&
+      todoForm.get('description')?.errors) {
+      <p class="text-error text-sm">Enter description</p>
+      }
+    </div>
+    <div class="mb-2">
+      <label for="title" class="inline-block mb-1 text-sm"
+        >Todo Completed</label
+      >
+      <select class="select" formControlName="completed">
+        <option value="false">No</option>
+        <option value="true">Yes</option>
+      </select>
+    </div>
+    <button class="btn btn-success">Submit</button>
+    @if(error()) {
+    <p class="text-error text-sm">
+      Error {{ todo() ? "updating" : "adding" }} todo
+    </p>
+    }
+  </form>
+  <!-- <p>
+      A card component has a figure, a body part, and inside body there are
+      title and actions parts
+    </p>
+    <div class="justify-end card-actions">
+      <button class="btn btn-primary">Buy Now</button>
+    </div> -->
+</div>
