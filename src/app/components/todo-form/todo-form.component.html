@@ -1,6 +1,6 @@
 @if(addTodoMutation.isPending() || updateTodoMutation.isPending()) {
 <loading />
-} @else {
+}
 <div class="card-body">
   <h1 class="text-center text-2xl font-semibold">
     {{ todo() ? "Update Todo" : "Add Todo" }}
@@ -53,12 +53,4 @@
     </p>
     }
   </form>
-  <!-- <p>
-        A card component has a figure, a body part, and inside body there are
-        title and actions parts
-      </p>
-      <div class="justify-end card-actions">
-        <button class="btn btn-primary">Buy Now</button>
-      </div> -->
 </div>
-}
