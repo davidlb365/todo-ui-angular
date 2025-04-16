@@ -1,3 +1,6 @@
+@if(addTodoMutation.isPending() || updateTodoMutation.isPending()) {
+<loading />
+} @else {
 <div class="card-body">
   <h1 class="text-center text-2xl font-semibold">
     {{ todo() ? "Update Todo" : "Add Todo" }}
@@ -40,17 +43,22 @@
       </select>
     </div>
     <button class="btn btn-success">Submit</button>
-    @if(error()) {
+    @if(addTodoMutation.error() || updateTodoMutation.error()) {
     <p class="text-error text-sm">
-      Error {{ todo() ? "updating" : "adding" }} todo
+      @if (todo()) {
+      {{ updateTodoMutation.error()?.error?.message || "Error" }}
+      } @else {
+      {{ addTodoMutation.error()?.error?.message || "Error" }}
+      }
     </p>
     }
   </form>
   <!-- <p>
-      A card component has a figure, a body part, and inside body there are
-      title and actions parts
-    </p>
-    <div class="justify-end card-actions">
-      <button class="btn btn-primary">Buy Now</button>
-    </div> -->
+        A card component has a figure, a body part, and inside body there are
+        title and actions parts
+      </p>
+      <div class="justify-end card-actions">
+        <button class="btn btn-primary">Buy Now</button>
+      </div> -->
 </div>
+}

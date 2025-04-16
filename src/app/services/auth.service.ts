@@ -38,11 +38,10 @@ export class AuthService {
   });
 
   handleAuthError(error: HttpErrorResponse) {
-    console.log(error.error.message);
+    console.log(error);
 
     if (error.status === 401) {
       // A client-side or network error occurred. Handle it accordingly.
-      console.log('An error occurred:', error.error);
       this.authInfo.set({
         authToken: null,
         authenticatedUser: null,
@@ -50,9 +49,13 @@ export class AuthService {
       });
       this.router.navigateByUrl('/login');
     }
-    const errorMessage: string = error.error.message;
+    const errorMessage: string = error?.error?.message;
     // Return an observable with a user-facing error message.
-    return throwError(() => new Error(errorMessage));
+    return throwError(() => {
+      return errorMessage
+        ? new Error(errorMessage)
+        : new Error('Something went wrong');
+    });
   }
 
   register(user: Partial<User>) {
@@ -60,11 +63,10 @@ export class AuthService {
   }
 
   login(user: Partial<LoginUser>): Observable<LoginResponse> {
-    return this.http
-      .post<LoginResponse>(`${baseUrl}/login`, {
-        usernameOrEmail: user.username,
-        password: user.password,
-      })
-      .pipe(catchError(this.handleAuthError));
+    return this.http.post<LoginResponse>(`${baseUrl}/login`, {
+      usernameOrEmail: user.username,
+      password: user.password,
+    });
+    // .pipe(catchError(this.handleAuthError));
   }
 }

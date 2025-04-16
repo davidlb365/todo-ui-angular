@@ -7,9 +7,13 @@
   >
     Add Todo
   </button>
-  } @if (todosResource.isLoading()) {
+  } @if (todosQuery.isLoading() || todosQuery.isFetching() ||
+  deleteMutation.isPending() || completeMutation.isPending() ||
+  incompleteMutation.isPending()) {
   <loading />
-  } @if (todosResource.hasValue()) {
+  }
+  <!--  -->
+  @else if (todosQuery.data()) {
   <div class="overflow-x-auto">
     <table class="table table-zebra table-xs sm:table-md">
       <!-- head -->
@@ -23,7 +27,7 @@
         </tr>
       </thead>
       <tbody>
-        @for (todo of todosResource.value(); track todo.id) {
+        @for (todo of todosQuery.data(); track todo.id) {
         <tr>
           <th>{{ $index + 1 }}</th>
           <td>{{ todo.title }}</td>

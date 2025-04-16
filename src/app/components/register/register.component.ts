@@ -4,16 +4,23 @@ import { Router, RouterLink } from '@angular/router';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { JsonPipe } from '@angular/common';
 import { User } from '../../interfaces/user.interface';
-import { firstValueFrom } from 'rxjs';
+import { firstValueFrom, lastValueFrom } from 'rxjs';
 import { AuthService } from '../../services/auth.service';
+import {
+  injectMutation,
+  QueryClient,
+} from '@tanstack/angular-query-experimental';
+import { HttpErrorResponse } from '@angular/common/http';
+import { LoadingComponent } from '../loading/loading.component';
 
 @Component({
   selector: 'app-register',
-  imports: [ReactiveFormsModule, RouterLink],
+  imports: [ReactiveFormsModule, RouterLink, LoadingComponent],
   templateUrl: './register.component.html',
 })
 export default class RegisterComponent {
   authService = inject(AuthService);
+  queryClient = inject(QueryClient);
   router = inject(Router);
   fb = inject(FormBuilder);
 
@@ -26,9 +33,19 @@ export default class RegisterComponent {
     password: ['', Validators.required],
   });
 
+  registerMutation = injectMutation(() => ({
+    mutationFn: (formValue: Partial<User>) =>
+      lastValueFrom(this.authService.register(formValue)),
+    onSuccess: () => {
+      this.router.navigateByUrl('/login');
+    },
+    onError: (error: HttpErrorResponse) => {
+      // console.log('tsquery error', { error });
+    },
+  }));
+
   async onSubmit() {
-    // this.todoForm.markAllAsTouched()
-    // console.log(this.registerForm.valid);
+    this.registerForm.markAllAsTouched();
 
     if (!this.registerForm.valid) return;
     const formValue: Partial<User> = {
@@ -38,13 +55,6 @@ export default class RegisterComponent {
       password: this.registerForm.get('password')?.value ?? '',
     };
 
-    try {
-      const data = await firstValueFrom(this.authService.register(formValue));
-      this.router.navigateByUrl('/login');
-      this.error.set(false);
-      // throw new Error('error');
-    } catch (error: any) {
-      this.error.set(true);
-    }
+    this.registerMutation.mutate(formValue);
   }
 }

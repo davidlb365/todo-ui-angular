@@ -1,3 +1,7 @@
+@if (registerMutation.isPending()) {
+<loading />
+}
+
 <div class="card w-96 mx-auto bg-base-100 card-md shadow-sm mt-3">
   <div class="card-body">
     <h1 class="text-center text-2xl font-semibold">Registration Form</h1>
@@ -117,8 +121,10 @@
           <a routerLink="/login" class="link link-primary">login here</a>
         </span>
       </div>
-      @if(this.error()) {
-      <p class="text-error text-sm">Error occurred</p>
+      @if(registerMutation.error()) {
+      <p class="text-error text-sm">
+        {{ registerMutation.error()?.error?.message || "Error" }}
+      </p>
       }
     </form>
   </div>

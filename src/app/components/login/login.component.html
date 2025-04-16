@@ -1,3 +1,7 @@
+@if (loginMutation.isPending()) {
+<loading />
+}
+
 <div class="card w-96 mx-auto bg-base-100 card-md shadow-sm mt-3">
   <div class="card-body">
     <h1 class="text-center text-2xl font-semibold">Login Form</h1>
@@ -73,8 +77,10 @@
           <a routerLink="/register" class="link link-primary">register here</a>
         </span>
       </div>
-      @if(this.error()) {
-      <p class="text-error text-sm">{{ this.error() }}</p>
+      @if(loginMutation.error()) {
+      <p class="text-error text-sm">
+        {{ loginMutation.error()?.error?.message || "Error" }}
+      </p>
       }
     </form>
   </div>

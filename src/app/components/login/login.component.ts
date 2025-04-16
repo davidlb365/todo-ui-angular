@@ -6,23 +6,43 @@ import { AuthService } from '../../services/auth.service';
 import { LoginUser } from '../../interfaces/user.interface';
 import { firstValueFrom } from 'rxjs';
 import { HttpErrorResponse } from '@angular/common/http';
+import {
+  QueryClient,
+  injectMutation,
+} from '@tanstack/angular-query-experimental';
+import { LoadingComponent } from '../loading/loading.component';
 
 @Component({
   selector: 'app-login',
-  imports: [ReactiveFormsModule, RouterLink],
+  imports: [ReactiveFormsModule, RouterLink, LoadingComponent],
   templateUrl: './login.component.html',
 })
 export default class LoginComponent {
   authService = inject(AuthService);
+  queryClient = inject(QueryClient);
   router = inject(Router);
   fb = inject(FormBuilder);
-
-  error = signal<string | null>(null);
 
   loginForm = this.fb.group({
     username: ['', Validators.required],
     password: ['', Validators.required],
   });
+
+  loginMutation = injectMutation(() => ({
+    mutationFn: (formValue: Partial<LoginUser>) =>
+      firstValueFrom(this.authService.login(formValue)),
+    onSuccess: (data) => {
+      this.authService.authInfo.set({
+        authToken: data.accessToken,
+        authenticatedUser: this.loginForm.get('username')?.value!,
+        role: data.role,
+      });
+      this.router.navigateByUrl('/todos');
+    },
+    onError: (error: HttpErrorResponse) => {
+      // console.log('tsquery error', { error });
+    },
+  }));
 
   async onSubmit() {
     if (!this.loginForm.valid) return;
@@ -33,21 +53,13 @@ export default class LoginComponent {
     };
     // console.log({ formValue });
 
-    try {
-      const data = await firstValueFrom(this.authService.login(formValue));
+    this.loginMutation.mutate(formValue);
 
-      this.authService.authInfo.set({
-        authToken: data.accessToken,
-        authenticatedUser: formValue.username!,
-        role: data.role,
-      });
-      this.router.navigateByUrl('/todos');
-      this.error.set(null);
-      // throw new Error('error');
-    } catch (error: any) {
-      console.log(error.message);
-
-      this.error.set(error.message);
-    }
+    // this.authService.authInfo.set({
+    //   authToken: data.accessToken,
+    //   authenticatedUser: formValue.username!,
+    //   role: data.role,
+    // });
+    // throw new Error('error');
   }
 }

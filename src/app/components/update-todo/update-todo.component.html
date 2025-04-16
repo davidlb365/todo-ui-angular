@@ -1,7 +1,7 @@
 <div class="card w-96 mx-auto bg-base-100 card-md shadow-sm mt-3">
-  @if (updateTodoResource.isLoading()) {
+  @if (todoQuery.isLoading() || todoQuery.isFetching()) {
   <loading />
-  } @if (updateTodoResource.hasValue()) {
-  <todo-form [todo]="updateTodoResource.value()" />
+  } @else if (todoQuery.data()) {
+  <todo-form [todo]="todoQuery.data()" />
   }
 </div>

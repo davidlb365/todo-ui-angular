@@ -3,11 +3,12 @@ import { TodoService } from '../../services/todo.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Todo } from '../../interfaces/todo.interface';
-import { firstValueFrom, map } from 'rxjs';
+import { firstValueFrom, lastValueFrom, map } from 'rxjs';
 import { JsonPipe } from '@angular/common';
 import { rxResource, toSignal } from '@angular/core/rxjs-interop';
 import { LoadingComponent } from '../loading/loading.component';
 import { TodoFormComponent } from '../todo-form/todo-form.component';
+import { injectQuery, QueryClient } from '@tanstack/angular-query-experimental';
 
 @Component({
   selector: 'app-update-todo',
@@ -16,27 +17,34 @@ import { TodoFormComponent } from '../todo-form/todo-form.component';
 })
 export default class UpdateTodoComponent {
   todoService = inject(TodoService);
+  queryClient = inject(QueryClient);
   router = inject(Router);
   route = inject(ActivatedRoute);
   fb = inject(FormBuilder);
 
   todoId = toSignal(this.route.params.pipe(map((params) => params['id'])));
 
-  updateTodoResource = rxResource({
-    request: () => ({
-      id: this.todoId(),
-    }),
-    loader: ({ request }) => {
-      return this.todoService.getTodo(request.id);
-    },
-  });
+  // updateTodoResource = rxResource({
+  //   request: () => ({
+  //     id: this.todoId(),
+  //   }),
+  //   loader: ({ request }) => {
+  //     return this.todoService.getTodo(request.id);
+  //   },
+  // });
+
+  todoQuery = injectQuery(() => ({
+    queryKey: ['todo', this.todoId()],
+    queryFn: () => lastValueFrom(this.todoService.getTodo(this.todoId())),
+    staleTime: 1000 * 60 * 10,
+  }));
 
   updateForm = effect(() => {
-    if (this.updateTodoResource.value()) {
+    if (this.todoQuery.data()) {
       this.todoForm.patchValue({
-        title: this.updateTodoResource.value()?.title,
-        description: this.updateTodoResource.value()?.description,
-        completed: this.updateTodoResource.value()?.completed,
+        title: this.todoQuery.data()?.title,
+        description: this.todoQuery.data()?.description,
+        completed: this.todoQuery.data()?.completed,
       });
     }
   });

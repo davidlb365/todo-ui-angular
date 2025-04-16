@@ -2,9 +2,14 @@ import { Component, computed, inject } from '@angular/core';
 import { TodoService } from '../../services/todo.service';
 import { rxResource } from '@angular/core/rxjs-interop';
 import { RouterLink, Router } from '@angular/router';
-import { firstValueFrom } from 'rxjs';
+import { firstValueFrom, lastValueFrom } from 'rxjs';
 import { AuthService } from '../../services/auth.service';
 import { LoadingComponent } from '../loading/loading.component';
+import {
+  injectMutation,
+  injectQuery,
+  QueryClient,
+} from '@tanstack/angular-query-experimental';
 
 @Component({
   selector: 'list-todo',
@@ -14,31 +19,54 @@ import { LoadingComponent } from '../loading/loading.component';
 export default class ListTodoComponent {
   todoService = inject(TodoService);
   authService = inject(AuthService);
+  queryClient = inject(QueryClient);
   router = inject(Router);
 
   isAdmin = computed(() => this.authService.authInfo().role === 'ROLE_ADMIN');
 
-  todosResource = rxResource({
-    request: () => ({}),
-    loader: ({ request }) => {
-      // console.log('request');
+  // todosResource = rxResource({
+  //   request: () => ({}),
+  //   loader: ({ request }) => {
+  //     return this.todoService.getTodos();
+  //   },
+  // });
 
-      return this.todoService.getTodos();
-    },
-  });
+  todosQuery = injectQuery(() => ({
+    queryKey: ['todos'],
+    queryFn: () => lastValueFrom(this.todoService.getTodos()),
+    staleTime: 1000 * 60 * 10,
+  }));
+
+  deleteMutation = injectMutation(() => ({
+    mutationFn: (todoId: number) =>
+      lastValueFrom(this.todoService.deleteTodo(todoId)),
+    onSuccess: () =>
+      this.queryClient.invalidateQueries({ queryKey: ['todos'] }),
+  }));
+
+  completeMutation = injectMutation(() => ({
+    mutationFn: (todoId: number) =>
+      lastValueFrom(this.todoService.completeTodo(todoId)),
+    onSuccess: () =>
+      this.queryClient.invalidateQueries({ queryKey: ['todos'] }),
+  }));
+
+  incompleteMutation = injectMutation(() => ({
+    mutationFn: (todoId: number) =>
+      lastValueFrom(this.todoService.incompleteTodo(todoId)),
+    onSuccess: () =>
+      this.queryClient.invalidateQueries({ queryKey: ['todos'] }),
+  }));
 
   async onDelete(todoId: number) {
-    await firstValueFrom(this.todoService.deleteTodo(todoId));
-    this.todosResource.reload();
+    this.deleteMutation.mutate(todoId);
   }
 
   async onComplete(todoId: number) {
-    await firstValueFrom(this.todoService.completeTodo(todoId));
-    this.todosResource.reload();
+    this.completeMutation.mutate(todoId);
   }
 
   async onIncomplete(todoId: number) {
-    await firstValueFrom(this.todoService.incompleteTodo(todoId));
-    this.todosResource.reload();
+    this.incompleteMutation.mutate(todoId);
   }
 }
