@@ -38,8 +38,8 @@
         >Todo Completed</label
       >
       <select class="select" formControlName="completed">
-        <option value="false">No</option>
-        <option value="true">Yes</option>
+        <option [ngValue]="false">No</option>
+        <option [ngValue]="true">Yes</option>
       </select>
     </div>
     <button class="btn btn-success">Submit</button>
